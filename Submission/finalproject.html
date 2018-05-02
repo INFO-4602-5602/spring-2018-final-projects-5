@@ -8,6 +8,7 @@
 
 <body>
   <div id="first">
+      <h1>Part One</h1>
       <h1>The NO2 AQI Mean in All U.S. States Each Year From 2000 to 2016</h1>
   </div>
 
@@ -599,7 +600,7 @@
                       .attr("d", valueline4(data));
 
             // Add the scatterplot points
-            
+
             svg.selectAll("circle")
                 .data(data)
                 .enter()
@@ -738,7 +739,7 @@
                         .attr('r', 5)
                     d3.select("#eText").remove();
                 });
-            
+
             // Add the X Axis
             svg.append("g")
                 .attr("transform", "translate(0," + height + ")")
@@ -775,5 +776,542 @@
                 .attr("x", width - 850);
  });
     </script>
+
+
+
+
+    <div id="NO2">
+      <h1>Part Three</h1>
+        <h1>NO2 1st Max value mean in All U.S. States Each Year From 2000 to 2016 </h1>
+    </div>
+    <script type="text/javascript">
+        d3.csv("data/YNO2.csv", function(error, data) {
+            //console.log(data);
+            if (error) throw error;
+            console.log(data);
+            var w = 700; // Width of our visualization
+            var h = 500; // Height of our visualization
+            var xOffset = 50; // Space for x-axis labels
+            var yOffset = 100; // Space for y-axis labels
+            var margin = 10; // Margin around visualization
+            var vals = ['Year', 'Value']; // List of data attributes
+            var xVal = vals[0]; // major to plot on x-axis
+            var yVal = vals[1]; // Number to plot on y-axis
+
+
+            // set the dimensions and margins of the graph
+            var margin = {
+                top: 20,
+                right: 20,
+                bottom: 30,
+                left: 50
+            };
+            var width = 960 - margin.left - margin.right;
+            var height = 500 - margin.top - margin.bottom;
+            var tooltip = d3.select("body").append("div").attr("class", "toolTip");
+            var Years=data.map(function(d){return d.Year});
+            // set the ranges
+            var x1 = d3.scaleBand()
+                        .domain(Years)
+                        .range([0, width])
+                        .paddingInner(0.1);
+            var x = d3.scaleLinear().range([-50, width]);
+            var y = d3.scaleLinear().range([height, 0]);
+            var bandwidth = x1.bandwidth()-10
+
+            data.forEach(function(d, idx) {
+                d.idx = idx + 1;
+            });
+            // append the svg obgect to the body of the page
+            // appends a 'group' element to 'svg'
+            // moves the 'group' element to the top left margin
+            var svg = d3.select("#NO2").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            x.domain([0, data.length + 1]);
+            // x.domain(data.map(function(d) {return d.major;}));
+            y.domain([0, d3.max(data, function(d) {
+                return parseFloat(d.Value)+5;
+            })]);
+
+            data.sort(function(a, b) {
+                return (b.Value - a.Value);
+            });
+
+            // Add the bar
+            var div = d3.select("#partThree").append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0);
+
+            svg.selectAll('.bar')
+                .data(data)
+                .enter()
+                // .append('div')
+                .append('rect')
+                .attr("transform","translate (3)")
+                .attr('x', function(d) {
+                    return x(d.idx)
+                })
+                .attr("y", function(d) {
+                    return y(d[yVal]);
+                })
+                .attr("width", bandwidth)
+                .attr("height", function(d) {
+                    return h - y(d.Value) - xOffset;
+                })
+                .style('fill', 'red')
+
+
+                .on('mouseover', function() { // changes color when hovering
+                    // linkConnect = d.x;
+                    var barc = d3.select(this);
+                    barc.style('fill', 'green')
+                        .transition()
+                    barc.append('svg:title') //tooltip
+                        .text(function(d) {
+                            return "Year: " + d['Year'] + " " + "Value: " + d['Value'];
+
+                        });
+                })
+                .on('mouseout', function() { // color changes back if mouse is out
+                    var barc = d3.select(this);
+                    barc.transition()
+                        .duration(500)
+                        .style("fill", "red");
+
+
+                });
+            var xAxis = d3.axisBottom(x1)
+                          .tickSizeOuter(0);
+            //console.log(d[xVal]);
+            // Add the X Axis
+            svg.append("g")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis)
+                .attr("width", 10);
+
+            // Add the Y Axis
+            svg.append("g")
+                //.attr("transform","translate(0," + height+")")
+                .call(d3.axisLeft(y));
+
+            //Add text labels
+            var xLabel = svg.append("text")
+                .attr("class", "label")
+                .text(xVal)
+                .attr("x", width - 20)
+                .attr("y", height - 10);
+
+            var yLabel = svg.append("text")
+                .attr("class", "label")
+                .text(yVal)
+                .attr("transform", "rotate(0)")
+                .attr("text-anchor", "start");
+        });
+
+    </script>
+
+    <div id="SO2">
+        <h1>SO2 1st Max value mean in All U.S. States Each Year From 2000 to 2016</h1>
+    </div>
+    <script type="text/javascript">
+        d3.csv("data/YSO2.csv", function(error, data) {
+            //console.log(data);
+            if (error) throw error;
+            console.log(data);
+            var w = 700; // Width of our visualization
+            var h = 500; // Height of our visualization
+            var xOffset = 50; // Space for x-axis labels
+            var yOffset = 100; // Space for y-axis labels
+            var margin = 10; // Margin around visualization
+            var vals = ['Year', 'Value']; // List of data attributes
+            var xVal = vals[0]; // major to plot on x-axis
+            var yVal = vals[1]; // Number to plot on y-axis
+
+
+            // set the dimensions and margins of the graph
+            var margin = {
+                top: 20,
+                right: 20,
+                bottom: 30,
+                left: 50
+            };
+            var width = 960 - margin.left - margin.right;
+            var height = 500 - margin.top - margin.bottom;
+            var tooltip = d3.select("body").append("div").attr("class", "toolTip");
+            var Years=data.map(function(d){return d.Year});
+            // set the ranges
+            var x1 = d3.scaleBand()
+                        .domain(Years)
+                        .range([0, width])
+                        .paddingInner(0.1);
+            var x = d3.scaleLinear().range([-50, width]);
+            var y = d3.scaleLinear().range([height, 0]);
+            var bandwidth = x1.bandwidth()-10
+
+            data.forEach(function(d, idx) {
+                d.idx = idx + 1;
+            });
+            // append the svg obgect to the body of the page
+            // appends a 'group' element to 'svg'
+            // moves the 'group' element to the top left margin
+            var svg = d3.select("#SO2").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            x.domain([0, data.length + 1]);
+            // x.domain(data.map(function(d) {return d.major;}));
+            y.domain([0, d3.max(data, function(d) {
+                return parseFloat(d.Value)+5;
+            })]);
+
+            data.sort(function(a, b) {
+                return (b.Value - a.Value);
+            });
+
+            // Add the bar
+            var div = d3.select("#partThree").append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0);
+
+            svg.selectAll('.bar')
+                .data(data)
+                .enter()
+                // .append('div')
+                .append('rect')
+                .attr("transform","translate (3)")
+                .attr('x', function(d) {
+                    return x(d.idx)
+                })
+                .attr("y", function(d) {
+                    return y(d[yVal]);
+                })
+                .attr("width", bandwidth)
+                .attr("height", function(d) {
+                    return h - y(d.Value) - xOffset;
+                })
+                .style('fill', 'red')
+
+
+                .on('mouseover', function() { // changes color when hovering
+                    // linkConnect = d.x;
+                    var barc = d3.select(this);
+                    barc.style('fill', 'green')
+                        .transition()
+                    barc.append('svg:title') //tooltip
+                        .text(function(d) {
+                            return "Year: " + d['Year'] + " " + "Value: " + d['Value'];
+
+                        });
+                })
+                .on('mouseout', function() { // color changes back if mouse is out
+                    var barc = d3.select(this);
+                    barc.transition()
+                        .duration(500)
+                        .style("fill", "red");
+
+
+                });
+            var xAxis = d3.axisBottom(x1)
+                          .tickSizeOuter(0);
+            //console.log(d[xVal]);
+            // Add the X Axis
+            svg.append("g")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis)
+                .attr("width", 10);
+
+            // Add the Y Axis
+            svg.append("g")
+                //.attr("transform","translate(0," + height+")")
+                .call(d3.axisLeft(y));
+
+            //Add text labels
+            var xLabel = svg.append("text")
+                .attr("class", "label")
+                .text(xVal)
+                .attr("x", width - 20)
+                .attr("y", height - 10);
+
+            var yLabel = svg.append("text")
+                .attr("class", "label")
+                .text(yVal)
+                .attr("transform", "rotate(0)")
+                .attr("text-anchor", "start");
+        });
+
+    </script>
+
+    <div id="CO">
+        <h1>CO 1st Max value mean in All U.S. States Each Year From 2000 to 2016</h1>
+    </div>
+    <script type="text/javascript">
+        d3.csv("data/YCO.csv", function(error, data) {
+            //console.log(data);
+            if (error) throw error;
+            console.log(data);
+            var w = 700; // Width of our visualization
+            var h = 500; // Height of our visualization
+            var xOffset = 50; // Space for x-axis labels
+            var yOffset = 100; // Space for y-axis labels
+            var margin = 10; // Margin around visualization
+            var vals = ['Year', 'Value']; // List of data attributes
+            var xVal = vals[0]; // major to plot on x-axis
+            var yVal = vals[1]; // Number to plot on y-axis
+
+
+            // set the dimensions and margins of the graph
+            var margin = {
+                top: 20,
+                right: 20,
+                bottom: 30,
+                left: 50
+            };
+            var width = 960 - margin.left - margin.right;
+            var height = 500 - margin.top - margin.bottom;
+            var tooltip = d3.select("body").append("div").attr("class", "toolTip");
+            var Years=data.map(function(d){return d.Year});
+            // set the ranges
+            var x1 = d3.scaleBand()
+                        .domain(Years)
+                        .range([0, width])
+                        .paddingInner(0.1);
+            var x = d3.scaleLinear().range([-50, width]);
+            var y = d3.scaleLinear().range([height, 0]);
+            var bandwidth = x1.bandwidth()-10
+
+            data.forEach(function(d, idx) {
+                d.idx = idx + 1;
+            });
+            // append the svg obgect to the body of the page
+            // appends a 'group' element to 'svg'
+            // moves the 'group' element to the top left margin
+            var svg = d3.select("#CO").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            x.domain([0, data.length + 1]);
+            // x.domain(data.map(function(d) {return d.major;}));
+            y.domain([0, d3.max(data, function(d) {
+                return parseFloat(d.Value)+5;
+            })]);
+
+            data.sort(function(a, b) {
+                return (b.Value - a.Value);
+            });
+
+            // Add the bar
+            var div = d3.select("#CO").append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0);
+
+            svg.selectAll('.bar')
+                .data(data)
+                .enter()
+                // .append('div')
+                .append('rect')
+                .attr("transform","translate (3)")
+                .attr('x', function(d) {
+                    return x(d.idx)
+                })
+                .attr("y", function(d) {
+                    return y(d[yVal]);
+                })
+                .attr("width", bandwidth)
+                .attr("height", function(d) {
+                    return h - y(d.Value) - xOffset;
+                })
+                .style('fill', 'red')
+
+
+                .on('mouseover', function() { // changes color when hovering
+                    // linkConnect = d.x;
+                    var barc = d3.select(this);
+                    barc.style('fill', 'green')
+                        .transition()
+                    barc.append('svg:title') //tooltip
+                        .text(function(d) {
+                            return "Year: " + d['Year'] + " " + "Value: " + d['Value'];
+
+                        });
+                })
+                .on('mouseout', function() { // color changes back if mouse is out
+                    var barc = d3.select(this);
+                    barc.transition()
+                        .duration(500)
+                        .style("fill", "red");
+
+
+                });
+            var xAxis = d3.axisBottom(x1)
+                          .tickSizeOuter(0);
+            //console.log(d[xVal]);
+            // Add the X Axis
+            svg.append("g")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis)
+                .attr("width", 10);
+
+            // Add the Y Axis
+            svg.append("g")
+                //.attr("transform","translate(0," + height+")")
+                .call(d3.axisLeft(y));
+
+            //Add text labels
+            var xLabel = svg.append("text")
+                .attr("class", "label")
+                .text(xVal)
+                .attr("x", width - 20)
+                .attr("y", height - 10);
+
+            var yLabel = svg.append("text")
+                .attr("class", "label")
+                .text(yVal)
+                .attr("transform", "rotate(0)")
+                .attr("text-anchor", "start");
+        });
+
+    </script>
+
+    <div id="O3">
+        <h1>O3 1st Max value mean in All U.S. States Each Year From 2000 to 2016</h1>
+    </div>
+    <script type="text/javascript">
+        d3.csv("data/YO3.csv", function(error, data) {
+            //console.log(data);
+            if (error) throw error;
+            console.log(data);
+            var w = 700; // Width of our visualization
+            var h = 500; // Height of our visualization
+            var xOffset = 50; // Space for x-axis labels
+            var yOffset = 100; // Space for y-axis labels
+            var margin = 10; // Margin around visualization
+            var vals = ['Year', 'Value']; // List of data attributes
+            var xVal = vals[0]; // major to plot on x-axis
+            var yVal = vals[1]; // Number to plot on y-axis
+
+
+            // set the dimensions and margins of the graph
+            var margin = {
+                top: 20,
+                right: 20,
+                bottom: 30,
+                left: 50
+            };
+            var width = 960 - margin.left - margin.right;
+            var height = 500 - margin.top - margin.bottom;
+            var tooltip = d3.select("body").append("div").attr("class", "toolTip");
+            var Years=data.map(function(d){return d.Year});
+            // set the ranges
+            var x1 = d3.scaleBand()
+                        .domain(Years)
+                        .range([0, width])
+                        .paddingInner(0.1);
+            var x = d3.scaleLinear().range([-50, width]);
+            var y = d3.scaleLinear().range([height, 0]);
+            var bandwidth = x1.bandwidth()-10
+
+            data.forEach(function(d, idx) {
+                d.idx = idx + 1;
+            });
+            // append the svg obgect to the body of the page
+            // appends a 'group' element to 'svg'
+            // moves the 'group' element to the top left margin
+            var svg = d3.select("#O3").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            x.domain([0, data.length + 1]);
+            // x.domain(data.map(function(d) {return d.major;}));
+            y.domain([0, d3.max(data, function(d) {
+                return parseFloat(d.Value)+5;
+            })]);
+
+            data.sort(function(a, b) {
+                return (b.Value - a.Value);
+            });
+
+            // Add the bar
+            var div = d3.select("#partThree").append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0);
+
+            svg.selectAll('.bar')
+                .data(data)
+                .enter()
+                // .append('div')
+                .append('rect')
+                .attr("transform","translate (3)")
+                .attr('x', function(d) {
+                    return x(d.idx)
+                })
+                .attr("y", function(d) {
+                    return y(d[yVal]);
+                })
+                .attr("width", bandwidth)
+                .attr("height", function(d) {
+                    return h - y(d.Value) - xOffset;
+                })
+                .style('fill', 'red')
+
+
+                .on('mouseover', function() { // changes color when hovering
+                    // linkConnect = d.x;
+                    var barc = d3.select(this);
+                    barc.style('fill', 'green')
+                        .transition()
+                    barc.append('svg:title') //tooltip
+                        .text(function(d) {
+                            return "Year: " + d['Year'] + " " + "Value: " + d['Value'];
+
+                        });
+                })
+                .on('mouseout', function() { // color changes back if mouse is out
+                    var barc = d3.select(this);
+                    barc.transition()
+                        .duration(500)
+                        .style("fill", "red");
+
+
+                });
+            var xAxis = d3.axisBottom(x1)
+                          .tickSizeOuter(0);
+            //console.log(d[xVal]);
+            // Add the X Axis
+            svg.append("g")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis)
+                .attr("width", 10);
+
+            // Add the Y Axis
+            svg.append("g")
+                //.attr("transform","translate(0," + height+")")
+                .call(d3.axisLeft(y));
+
+            //Add text labels
+            var xLabel = svg.append("text")
+                .attr("class", "label")
+                .text(xVal)
+                .attr("x", width - 20)
+                .attr("y", height - 10);
+
+            var yLabel = svg.append("text")
+                .attr("class", "label")
+                .text(yVal)
+                .attr("transform", "rotate(0)")
+                .attr("text-anchor", "start");
+        });
+
+    </script>
+
 </body>
 </html>
